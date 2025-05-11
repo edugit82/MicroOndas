@@ -1,65 +1,64 @@
-﻿using MicroOndas.Business;
+﻿using MicroOndas.DataBase;
 using MicroOndas.DataBase.Models;
-using MicroOndas.DataBase;
-using System.Data.Entity;
-using Microsoft.Extensions.Configuration;
+using MicroOndas.Public;
+using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace MicroOndas.Interface.Business
+namespace MicroOndas.Business
 {
-    public class AquecimentoBusiness
+    public class AquecimentoBusiness : _Business
     {
-        public void Business(ref RetornoAquecimentoViewModel _retorno, IConfiguration _configuration, AquecimentoViewModel aquecimento)
+        public AquecimentoBusiness(AquecimentoViewModel viewmodel, bool logado) 
         {
-            RetornoAquecimentoViewModel retorno = _retorno;
-
-            LogDeErros.Log(ref retorno, () =>
+            //Está logado
+            if (!logado)
             {
-                aquecimento.Potencia = aquecimento.Potencia ?? "10";
-                aquecimento.Potencia = aquecimento.Potencia  == "0" ? "10" : aquecimento.Potencia;
-                aquecimento.Potencia = int.Parse(aquecimento.Potencia) > 10  ? "10" : aquecimento.Potencia;
+                this.Retorno = "Token inválido!";
+                this.Cor = "red";
 
-                aquecimento.Tempo = aquecimento.Tempo ?? "00:00";
-                int num = 0;
+                return;
+            }
 
-                if (int.Parse(aquecimento.Potencia) < 1)
+            viewmodel.Potencia = viewmodel.Potencia ?? "10";
+            viewmodel.Potencia = viewmodel.Potencia == "" ? "10" : viewmodel.Potencia;
+            viewmodel.Potencia = viewmodel.Potencia == "0" ? "10" : viewmodel.Potencia;
+            viewmodel.Potencia = int.Parse(viewmodel.Potencia) > 10 ? "10" : viewmodel.Potencia;
+
+            viewmodel.Tempo = viewmodel.Tempo ?? "00:00";
+            int num = 0;
+
+            bool gravaerro = true;
+
+            try
+            {
+
+                if (int.Parse(viewmodel.Potencia) < 1)
+                    throw new AquecimentoPonteciaInvalidaException("Potência não pode ser menor que 1");
+
+                if (viewmodel.Tempo.IndexOf(":") > -1)
                 {
-                    retorno.Mensagem = "<span style='color:red;'>Potência não pode ser menor que 1!</span>";
-                    return;
-                }
-
-                if (aquecimento.Tempo.IndexOf(":") > -1)
-                {
-                    string[] split = aquecimento.Tempo.Split(':');
+                    string[] split = viewmodel.Tempo.Split(':');
                     num = int.Parse(split[0]) * 60 + int.Parse(split[1]);
 
                     // maior que 2 minutos
                     if (num > 120)
-                    {
-                        retorno.Mensagem = "<span style='color:red;'>Tempo não pode ser maior que 2 minutos!</span>";
-                        return;
-                    }
+                        throw new AquecimentoTempoExcedidoException("Tempo não pode ser maior que 2 minutos!");
 
                     // menor que 1 segundo
                     if (num < 1)
-                    {
-                        retorno.Mensagem = "<span style='color:red;'>Tempo não pode ser menor que 1 segundo!</span>";
-                        return;
-                    }
+                        throw new AquecimentoTempoInvalidoException("Tempo não pode ser menor que 1 segundo!");
                 }
                 else
                 {
-                    num = int.Parse(aquecimento.Tempo);
+                    num = int.Parse(viewmodel.Tempo);
                 }
 
-                string conn = _configuration["Conn"] ?? "";
-                conn = CryptoHelper.Decrypt(conn);
-
-                using (Context ctx = new Context(conn))
+                using (Context ctx = new Context())
                 {
-
                     //Elimina cancelados
                     List<AquecimentoModel> cancelados = ctx.Aquecimento.ToList().Where(a => a.Cancelado).ToList();
                     ctx.Aquecimento.RemoveRange(cancelados);
@@ -101,7 +100,7 @@ namespace MicroOndas.Interface.Business
                             Inicio = DateTime.Now,
                             Fim = DateTime.Now.AddSeconds(num),
                             Pausa = DateTime.Now.AddSeconds(num),
-                            Potencia = int.Parse(aquecimento.Potencia),
+                            Potencia = int.Parse(viewmodel.Potencia),
                             Ativo = true,
                             Cancelado = false
                         };
@@ -122,19 +121,44 @@ namespace MicroOndas.Interface.Business
                         last = ativos.OrderBy(a => a.Index).Last();
 
                     //Ainda em progresso, mas não pré definidos
-                    if (last.Fim > DateTime.Now && (aquecimento.Id < 1 || aquecimento.Id > 5))
+                    if (last.Fim > DateTime.Now && (viewmodel.Id < 1 || viewmodel.Id > 5))
                     {
                         //Acrescenta o tempo
                         last.Fim = last.Fim.AddSeconds(30);
 
                         ctx.Entry(last).State = EntityState.Modified;
                         ctx.SaveChanges();
-                    }                    
+                    }
                 }
-
-            });
-
-            _retorno = retorno;
+            }
+            catch (LogarLoginInvalidoException ex)
+            {
+                this.Retorno = ex.Message;
+                this.Cor = "red";
+                gravaerro = false;
+            }
+            catch (AquecimentoTempoExcedidoException ex)
+            {
+                this.Retorno = ex.Message;
+                this.Cor = "red";
+                gravaerro = false;
+            }
+            catch (AquecimentoTempoInvalidoException ex)
+            {
+                this.Retorno = ex.Message;
+                this.Cor = "red";
+                gravaerro = false;
+            }
+            catch (Exception ex)
+            {
+                if (gravaerro)
+                    Excecao.GravaExcecao(ex);
+            }
+            finally
+            {
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+            }
         }
     }
 }

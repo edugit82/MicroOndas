@@ -1,183 +1,228 @@
 ﻿using MicroOndas.Business;
-using MicroOndas.DataBase;
 using MicroOndas.DataBase.Models;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
+using MicroOndas.DataBase;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Data.Entity;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using System.Text.Json;
+using System.Net.Http.Headers;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MicroOndas.Interface.Controllers
-{    
-    
+{
     public class MicroOndasController : Controller
-    {        
-        public IActionResult MicroOndas()
+    {
+        private readonly IConfiguration _configuration;
+        private string GenerateJwtToken(string username, IConfiguration _configuration)
         {
+            var claims = new[]
+            {
+                new Claim(ClaimTypes.Name, username),
+                new Claim(JwtRegisteredClaimNames.Sub, username),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+            };
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"] ?? ""));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            var token = new JwtSecurityToken(
+                issuer: _configuration["Jwt:Issuer"],
+                audience: _configuration["Jwt:Audience"],
+                claims: claims,
+                expires: DateTime.Now.AddMinutes(30),
+                signingCredentials: creds);
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+        public MicroOndasController(IConfiguration configuration)
+        {
+            this._configuration = configuration;
+        }
+        public IActionResult Cadastrar()
+        {
+
             return View();
         }
-    }
-
-
-    [AllowAnonymous]
-    [Route("api/[controller]")]
-    [ApiController]
-    public class CadastrarController : ControllerBase
-    {
-        private readonly IConfiguration _configuration;
-        public CadastrarController(IConfiguration configuration)
+        public IActionResult Logar()
         {
-            _configuration = configuration;
-        }
 
+            return View();
+        }
+        public IActionResult MicroOndas()
+        {
+            if (!Logado())
+            {
+                return RedirectToAction("Logar", "MicroOndas");
+            }
+
+            return View();
+        }
+        public IActionResult CadastrarPrograma()
+        {
+            if (!Logado())
+            {
+                return RedirectToAction("Logar", "MicroOndas");
+            }
+
+            return View();
+        }
         [HttpPost]
-        public IActionResult Post([FromBody] CadastrarViewModel cadastrar)
+        public JsonResult PostCadastro([FromBody] CadastrarViewModel viewModel)
         {
-            RetornoAquecimentoViewModel retorno = new RetornoAquecimentoViewModel();
-
-            new Business.CadastrarBusiness().Business(ref retorno, _configuration, cadastrar);
-
-            return Ok(retorno);
+            CadastrarBusiness cadastroBusiness = new CadastrarBusiness(viewModel);
+            return Json(cadastroBusiness);
         }
-    }
-
-    [AllowAnonymous]
-    [Route("api/[controller]")]
-    [ApiController]
-    public class LogarController : ControllerBase
-    {
-        private readonly IConfiguration _configuration;
-        public LogarController(IConfiguration configuration)
-        {
-            _configuration = configuration;
-        }
-
         [HttpPost]
-        public IActionResult Post([FromBody] LogarViewModel logar)
+        public JsonResult PostLogar([FromBody] LogarViewModel viewModel)
         {
-            RetornoAquecimentoViewModel retorno = new RetornoAquecimentoViewModel();
+            LogarBusiness logarBusiness = new LogarBusiness(viewModel);
 
-            new Business.LogarBusiness().Business(ref retorno, _configuration, logar);
+            //Login efetuado com sucesso
+            if (logarBusiness.Cor == "green")
+            {
+                //Gera token
+                string _token = GenerateJwtToken(viewModel.Login, _configuration);
 
-            return Ok(retorno);
-        }        
-    }
-        
-    [Authorize]    
-    [Route("api/[controller]")]
-    [ApiController]
-    public class AquecimentoController : ControllerBase
-    {
-        private readonly IConfiguration _configuration;
-        public AquecimentoController(IConfiguration configuration)
-        {
-            _configuration = configuration;
+                //Salva token no banco
+                using (Context ctx = new Context())
+                {
+                    LoginModel? model = ctx.Login.FirstOrDefault(x => x.Usuario == viewModel.Login);
+                    if (model != null)
+                    {
+                        model.Token = _token;
+                        ctx.Entry(model).State = EntityState.Modified;
+                        ctx.SaveChanges();
+                    }
+                }
+
+                HttpContext.Session.SetString("_Login", viewModel.Login);
+            }
+
+            return Json(logarBusiness);
         }
-
         [HttpPost]
-        public IActionResult Post([FromBody] AquecimentoViewModel aquecimento)
+        public JsonResult PostCadastrarPrograma([FromBody]CadastroProgramaViewModel viewModel)
         {
-            RetornoAquecimentoViewModel retorno = new RetornoAquecimentoViewModel();
-
-            new Business.AquecimentoBusiness().Business(ref retorno, _configuration, aquecimento);
-
-            return Ok(retorno);
+            bool logado = Logado();            
+            CadastrarProgramaBusiness cadastroProgramaBusiness = new CadastrarProgramaBusiness(viewModel, logado);
+            return Json(cadastroProgramaBusiness);
         }
-    }
-
-    [AllowAnonymous]
-    [Route("api/[controller]")]
-    [ApiController]
-    public class ProgressoController : ControllerBase
-    {
-        private readonly IConfiguration _configuration;
-        public ProgressoController(IConfiguration configuration)
-        {
-            _configuration = configuration;
-        }
-
         [HttpPost]
-        public IActionResult Post([FromBody] ProgressoViewModel progresso)
+        public async Task<JsonResult> PostAquecimento([FromBody] AquecimentoViewModel aquecimentos)
         {
-            RetornoAquecimentoViewModel retorno = new RetornoAquecimentoViewModel();
-
-            new Business.ProgressoBusiness().Business(ref retorno, _configuration, progresso);
-
-            return Ok(retorno);
+            return await Task.Run(() =>
+            {
+                bool logado = Logado();
+                AquecimentoBusiness aquecimentoBusinness = new AquecimentoBusiness(aquecimentos,logado);
+                return Json(aquecimentoBusinness);
+            });
         }
-    }
-
-    [Authorize]
-    [Route("api/[controller]")]
-    [ApiController]
-    public class PausaController : ControllerBase
-    {
-        private readonly IConfiguration _configuration;
-        public PausaController(IConfiguration configuration)
+        [HttpPost]
+        public async Task<JsonResult> PostProgresso([FromBody] ProgressoViewModel progresso)
         {
-            _configuration = configuration;
+            return await Task.Run(() =>
+            {
+                bool logado = Logado();
+                ProgressoBusiness progressoBusinness = new ProgressoBusiness(progresso, logado);
+                return Json(progressoBusinness);
+            });
         }
-
+        [HttpPost]
+        public async Task<JsonResult> PostDescricaoPrograma([FromBody] DescricaoProgramaViewModel viewmodel)
+        {
+            return await Task.Run(() =>
+            {
+                bool logado = Logado();
+                DescricaoProgramaBusiness descricaoProgramaBusiness = new DescricaoProgramaBusiness(viewmodel, logado);
+                return Json(descricaoProgramaBusiness);
+            });
+        }
+        [HttpPost]
+        public async Task<JsonResult> PostDadosProgramaPorId([FromBody] DadosProgramaPorIdViewModel viewmodel)
+        {
+            return await Task.Run(() =>
+            {
+                DadosProgramaPorIdBusiness dadosProgramaPorIdBusiness = new DadosProgramaPorIdBusiness(viewmodel);
+                return Json(dadosProgramaPorIdBusiness.Retorno);
+            });
+        }
         [HttpGet]
-        public IActionResult Get()
+        public async Task<JsonResult> GetPausa()
         {
-            RetornoAquecimentoViewModel retorno = new RetornoAquecimentoViewModel();
-
-            new Business.PausaBusiness().Business(ref retorno, _configuration);
-
-            return Ok(retorno);
+            return await Task.Run(() =>
+            {
+                bool logado = Logado();
+                PausaBusiness pausaBusiness = new PausaBusiness(logado);
+                return Json(pausaBusiness);
+            });
         }
-    }
-
-    [AllowAnonymous]
-    [Route("api/[controller]")]
-    [ApiController]
-    public class DadosProgramaController : ControllerBase
-    {
-        private readonly IConfiguration _configuration;
-        public DadosProgramaController(IConfiguration configuration)
-        {
-            _configuration = configuration;
-        }
-
         [HttpGet]
-        public IActionResult Get()
+        public async Task<JsonResult> GetDadosPrograma()
         {
-            RetornoAquecimentoViewModel retorno = new RetornoAquecimentoViewModel();
+            return await Task.Run(() =>
+            {
+                bool logado = Logado();
+                DadosProgramaBusiness dadosProgramaBusiness = new DadosProgramaBusiness(logado);
+                return Json(dadosProgramaBusiness);
+            });
+        }
+        private bool Logado()
+        {
+            string login = HttpContext.Session.GetString("_Login") ?? "";
+            bool logado = false;
 
-            new Business.DadosProgramaBusiness().Business(ref retorno, _configuration);
+            using (Context ctx = new Context())
+            {
+                LoginModel? model = ctx.Login.FirstOrDefault(x => x.Usuario == login);
+                if (model != null)
+                {
+                    HttpClient client = new HttpClient();
 
-            return Ok(retorno);            
+                    client.BaseAddress = new Uri("https://localhost:44321/");
+                    client.DefaultRequestHeaders.Accept.Clear();
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", model.Token);
+
+                    try
+                    {
+                        Task.Run(async () =>
+                        {
+                            var response = await client.GetAsync("api/confirmalogado");
+                            response.EnsureSuccessStatusCode();
+                            var retorno = await response.Content.ReadAsStringAsync();
+
+                        }).Wait();
+
+                        logado = true;
+                    }
+                    catch (Exception)
+                    {
+                        logado = false;
+                    }
+                }
+            }
+
+            return logado;
         }
     }
 
-    [Authorize]
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
-    public class CadastrarProgramaController : ControllerBase
+    public class ApiController : ControllerBase
     {
         private readonly IConfiguration _configuration;
-        public CadastrarProgramaController(IConfiguration configuration)
+        public ApiController(IConfiguration configuration)
         {
             _configuration = configuration;
         }
 
-        [HttpPost]
-        public IActionResult Post([FromBody] CadastroProgramaViewModel programa)
+        [Authorize]
+        [HttpGet("confirmalogado")]
+        public IActionResult ConfirmaLogado()
         {
-            RetornoAquecimentoViewModel retorno = new RetornoAquecimentoViewModel();
-
-            new Business.CadastrarProgramaBusiness().Business(ref retorno, _configuration, programa);
-
-            return Ok(retorno);
-
+            return Ok(true);
         }
-    }   
-    
+    }
 }

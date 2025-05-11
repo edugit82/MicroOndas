@@ -6,9 +6,4 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\MicroOndas.DataBase\MicroOndas.DataBase.csproj" />
-    <ProjectReference Include="..\MicroOndas.Public\MicroOndas.Public.csproj" />
-  </ItemGroup>
-
 </Project>

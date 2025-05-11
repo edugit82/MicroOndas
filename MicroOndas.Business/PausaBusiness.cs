@@ -1,25 +1,33 @@
-﻿using MicroOndas.Business;
+﻿using MicroOndas.DataBase;
 using MicroOndas.DataBase.Models;
-using MicroOndas.DataBase;
-using System.Data.Entity;
+using MicroOndas.Public;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace MicroOndas.Interface.Business
+namespace MicroOndas.Business
 {
-    public class PausaBusiness
+    public class PausaBusiness : _Business
     {
-        public void Business(ref RetornoAquecimentoViewModel _retorno, IConfiguration _configuration) 
+        public PausaBusiness(bool logado)            
         {
-            RetornoAquecimentoViewModel retorno = _retorno;
-            retorno.PararProgresso = false;
-
-            LogDeErros.Log(ref retorno, () =>
+            //Está logado
+            if (!logado)
             {
-                string conn = _configuration["Conn"] ?? "";
-                conn = CryptoHelper.Decrypt(conn);
+                this.Retorno = "Token inválido!";
+                this.Cor = "red";
 
-                using (Context ctx = new Context(conn))
+                return;
+            }
+
+            bool gravaerro = true;
+            try
+            {
+                using (Context ctx = new Context()) 
                 {
-
                     //Pausados
                     List<AquecimentoModel> pausados = ctx.Aquecimento.ToList().Where(a => !a.Ativo && !a.Cancelado).ToList();
                     if (pausados.Any())
@@ -32,8 +40,8 @@ namespace MicroOndas.Interface.Business
                         ctx.Entry(last).State = EntityState.Modified;
                         ctx.SaveChanges();
 
-                        retorno.Mensagem = "<span style='color:red'>Aquecimento cancelado!</span>";
-                        retorno.PararProgresso = true;
+                        this.Retorno = "Aquecimento cancelado!";
+                        this.Cor = "red";
                     }
 
                     //Ativos
@@ -51,21 +59,23 @@ namespace MicroOndas.Interface.Business
                             ctx.Entry(last).State = EntityState.Modified;
                             ctx.SaveChanges();
 
-                            retorno.Mensagem = "<span style='color:blue'>Aquecimento pausado!</span>";
-
+                            this.Retorno = "Aquecimento pausado!";
+                            this.Cor = "blue";
                         }
 
                     }
-                    else
-                    {
-                        retorno.PararProgresso = true;
-                    }
-
                 }
-            });
-
-
-            _retorno = retorno;
+            }
+            catch (Exception ex)
+            {
+                if (gravaerro)
+                    Excecao.GravaExcecao(ex);
+            }
+            finally
+            {
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+            }
         }
     }
 }

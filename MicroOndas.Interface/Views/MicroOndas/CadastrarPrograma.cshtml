@@ -1,0 +1,93 @@
+﻿@{
+    ViewData["Title"] = "CadastrarPrograma";
+}
+
+<div class="container mt-5 d-flex justify-content-center">
+    <div class="col-md-6">
+        <h2 class="text-center">Cadastrar Programa</h2>
+        <div class="mt-4">
+            <div class="mb-3">
+                <label for="nome" class="form-label">Nome</label>
+                <input type="text" class="form-control" id="nome" name="nome" placeholder="Digite o Nome" required>
+            </div>
+            <div class="mb-3">
+                <label for="alimento" class="form-label">Alimento</label>
+                <input type="text" class="form-control" id="alimento" name="alimento" placeholder="Digite o Alimento" required>
+            </div>
+            <div class="mb-3">
+                <label for="tempo" class="form-label">Tempo (00:00)</label>
+                <input type="text" class="form-control" id="tempo" name="tempo" placeholder="Digite o Tempo" required>                
+            </div>
+            <div class="mb-3">
+                <label for="potencia" class="form-label">Potência (1-10)</label>
+                <input type="text" class="form-control" id="potencia" name="potencia" placeholder="Digite a Potência" required>
+            </div>
+            <div class="mb-3">
+                <label for="progresso" class="form-label">Progresso: ($,#,%,etc.)</label>
+                <input type="text" class="form-control" id="progresso" name="progresso" placeholder="Digite o Progresso" required>
+            </div>
+            <div class="mb-3">
+                <label for="instrucoes" class="form-label">Instruções:</label>                
+                <textarea class="form-control" id="instrucoes" name="instrucoes" placeholder="Digite as Instruções"></textarea>
+            </div>
+            <button class="submit btn btn-primary w-100">Cadastrar</button>
+        </div>
+        <div style="margin-top:2%;">
+            <label class="mensagem" style="font:bold;"></label>
+        </div>
+    </div>
+</div>
+
+<script>    
+
+    //Formata campo tempo
+    $("input[type='text']#tempo").on("keyup",(event) => 
+    {
+        let obj = event.target;
+        _keyupnum(obj,["0","0",":","0","0"],4);
+    });
+
+    //Formata campo potencia
+    $("input[type='text']#potencia").on("keyup",(event) => 
+    {
+        let obj = event.target;
+        _keyupnum(obj,["0","0"],2);
+    });
+
+    //Formata campo progresso
+    $("input[type='text']#progresso").on("keyup",(event) => 
+    {
+        let obj = event.target;
+        _keyupspc(obj,["0"],1);
+    });
+
+    $("button.submit:first").on("click",function()
+    {
+        let nome = $("input[type='text']#nome").val();
+        let alimento = $("input[type='text']#alimento").val();
+        let tempo = $("input[type='text']#tempo").val();
+        
+        let potencia = $("input[type='text']#potencia").val();
+        potencia = potencia.length == 0 ? "0" : potencia;
+        
+        let progresso = $("input[type='text']#progresso").val();
+        let instrucoes = $("textarea#instrucoes").val();
+
+        let dados = {
+                Nome: nome,
+                Alimento: alimento,
+                Tempo: tempo,
+                Potencia: potencia,
+                Progresso: progresso,
+                Instrucoes: instrucoes
+        };
+
+        ajaxjson("/MicroOndas/PostCadastrarPrograma","Post",dados,(data) =>
+        {
+            $("label.mensagem:first").css("color",data.cor);
+            $("label.mensagem:first").text(data.retorno);
+        });       
+        
+    });
+
+</script>

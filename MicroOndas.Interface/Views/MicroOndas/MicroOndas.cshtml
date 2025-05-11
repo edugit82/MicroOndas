@@ -1,804 +1,357 @@
 ﻿@{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "MicroOndas";
 }
 
-
 <style>
-    
-    *
-    {
-        width:100%;
-        float: left;
-    }
-    
-    div.microondascorpo
-    {
-        width:92%;        
-        margin: 4%;
+    .corpo_mensagem {
+        margin-left: 2%;
     }
 
-        div.microondascorpo > div.opcoes 
-        {
-            float: left;
-            height: 100%;
-            width: 70%;        
-        }
+    .microondas {
+        background-color: black;
+        width: 96%;
+        margin: 2%;
+    }
 
-        div.microondascorpo > div.opcoesesquerda 
-        {            
-            float: right;            
-            height: 100%;
-            width: 30%;            
-        }                                 
+    .nivel01 {
+    }
 
-        div.microondascorpo  > div.opcoesesquerda > div.teclado > div.linha > div.botao 
-        {
-             float:left;
-             border: 1.5px solid black;
-             border-radius: 1px;
-             padding: 10px;
-             margin:2px;
-        }        
+    .nivel01.esquerda {
+        width: 60%;
+    }
 
-        div.microondascorpo > div.opcoes > div
-        {
-            
-        }       
-        
-        div.microondascorpo > div.opcoes > div.timerpotencia > div 
-        {            
-            width: 50%;
-        }
+    .nivel01.direita {
+        float: right;
+        width: 40%;
+    }
 
-        div.microondascorpo > div.opcoes > div.timerpotencia > div:nth-child(1)
-        {
-            padding-right:1%;
-        }
-        
-        div.microondascorpo > div.opcoes > div.timerpotencia > div > div:nth-child(1) > input
-        {
-            width:4%;
-        }
+    .digital-display {
+        background-color: transparent;
+        color: yellow;
+        font-size: 30px;
+        font-weight: bold;
+        font-family: 'Courier New', Courier, monospace;
+        text-align: center;
+        padding: 10px;
+        border: 1px solid yellow;
+    }
 
-        div.microondascorpo > div.opcoes > div.timerpotencia > div > div:nth-child(3)
-        {
-            width:40%;
-        }
+    .custom-button {
+        background-color: black;
+        color: yellow;
+        border: 2px solid yellow;
+        padding: 10px 20px;
+        font-size: 16px;
+        font-family: 'Courier New', Courier, monospace;
+        cursor: pointer;
+        margin: 5px;
+        width: 48%;
+    }
 
-        div.microondascorpo > div.opcoesesquerda  > div.teclado > div > div
-        {
-            width:11%;
-        }
+    .custom-button:hover {
+        background-color: yellow;
+        color: black;
+    }
 
-        div.microondascorpo > div.opcoes > div.ativacao > div
-        {
-            width:20%;
-            margin-right: 2%;
-        }
+    .teclado {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        margin-top: 20px;
+    }
 
-        div.microondascorpo > div.opcoes > div.programas > div
-        {
-            margin-bottom:2%;
-        }
+    .teclado-button {
+        background-color: black;
+        color: yellow;
+        border: 2px solid yellow;
+        padding: 15px;
+        font-size: 20px;
+        font-family: 'Courier New', Courier, monospace;
+        cursor: pointer;
+        text-align: center;
+        width: 30%;
+        margin: 1%;
+    }
 
-        div.logincadastrocorpo 
-        {                        
-            width: 92%;            
-            margin: 4%;
-        }
+    .teclado-button:hover {
+        background-color: yellow;
+        color: black;
+    }
 
-        div.logincadastrocorpo > div.cadastrarcorpo
-        {            
-            width: 30%;
-        }
+    div.teclado > button:nth-child(10) {
+        margin-left: 33%;
+    }
 
-        div.logincadastrocorpo > div.logincorpo 
-        {            
-            width: 30%;
-        }
+    div.espaco_custom_button {
+        padding-top: 47.7%;
+    }
 
-        div.logincadastrocorpo > div > div:nth-child(2)
-        {
-            margin-top:2%;
-        }
+    div.corpo_mensagem {
+        width: 95%;
+    }
 
-        div.logincadastrocorpo > div > div:nth-child(3) 
-        {
-            width:50%;
-        }
+    div.corpo_progresso {
+        padding: 2%;
+    }
 
-        div.logincadastrocorpo > div > div:nth-child(5) 
-        {
-            width: 50%;
-        }
+    div.lista-programas {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px 10px;
+        padding: 2%;
+    }
 
-        div.logincadastrocorpo > div.cadastrarcorpo > div:nth-child(7) > input
-        {
-            width: 50%;
-        }
+    div.lista-programas > button {
+        background-color: black;
+        color: yellow;
+        border: 2px solid yellow;
+        padding: 15px;
+        font-size: 20px;
+        font-family: 'Courier New', Courier, monospace;
+        cursor: pointer;
+        text-align: center;
+    }
 
-        div.logincadastrocorpo > div.cadastrarcorpo > div:nth-child(8) 
-        {
-            margin-top: 4%;
-            width: 50%;
-        }
+    div.lista-programas > button:hover {
+        background-color: yellow;
+        color: black;
+    }
 
-        div.logincadastrocorpo > div.logincorpo > div:nth-child(6) > button
-        {
-            margin-top: 4%;            
-            width: 50%;
-        }
-
-        div.logincadastrocorpo > div.cadastrarcorpo > div.mensagem
-        {
-            margin-top: 2%;
-        }
-
-        div.logincadastrocorpo > div.logincorpo > div.mensagem
-        {
-            margin-top: 2%;
-        }
-
-        div.microondascorpo > div.opcoes > div.progresso
-        {
-           margin-top: 2%;
-           margin-bottom: 2%;
-        }
-
-        div.microondascorpo > div.opcoes > div.ativacao
-        {
-            margin-top: 2%;
-            margin-bottom: 2%;
-        }
-
-        div.microondascorpo > div.opcoesesquerda > div.cadastroprograma
-        {            
-            margin-top: 4%;        
-        }
-
-        div.microondascorpo > div.opcoesesquerda > div.cadastroprograma > div:nth-child(14) > button        
-        {
-            margin-top: 4%;
-            width: 50%;
-        }
-
-        div.microondascorpo > div.opcoesesquerda > div.cadastroprograma > div.mensagem
-        {
-            margin-top: 4%;
-        }
-    
+    div.lista-programas > div {
+        position: fixed;
+        background-color: white;
+        display: none;
+        width: 30%;
+        z-index: 1000;
+    }
 </style>
 
-<div class="logincadastrocorpo">
-    <div class="cadastrarcorpo">
-        <div>
-            <label>Cadastrar:</label>
-        </div>
-        <div>
-            <label>Usuário</label>
-        </div>
-        <div>
-            <input type="text"/>
-        </div>
-        <div>
-            <label>Senha</label>
-        </div>
-        <div>
-            <input type="password" />
-        </div>
-        <div>
-            <label>Confirma Senha</label>
-        </div>
-        <div>
-            <input type="password" />
-        </div>
-        <div>
-            <button>Cadastrar</button>
-        </div>
-        <div class="mensagem">
-            
-        </div>
-    </div>
-    <div class="logincorpo">
-        <div>
-            <label>Logar:</label>
-        </div>
-        <div>
-            <label>Usuário</label>
-        </div>
-        <div>
-            <input type="text"/>
-        </div>
-        <div>
-            <label>Senha</label>
-        </div>
-        <div>
-            <input type="password" />
-        </div>
-        <div>
-            <button>Logar</button>
-        </div>
-        <div class="mensagem">
-        </div>
-    </div>
-</div>
-<div class="microondascorpo">
-    <div class="opcoes">        
-        <div class="timerpotencia">
-            <div class="timer">
-                <div><input type="radio" class="radio" value="0" name="radiogroup"></div>
-                <div>
-                  <label>Timer:</label>
-                </div>
-                <div>
-                   <input type="text" class="dadosdigitais"/>
-                </div>
-            </div>
-            <div class="potencia">
-                <div><input type="radio" class="radio" value="1" name="radiogroup"></div>
-                <div>
-                    <label>Potência:</label>
-                </div>
-                <div>
-                     <input type="text" class="dadosdigitais" />
-                </div>
-            </div>
-            <input class="index" type="hidden"/>
-        </div>
-        <div class="progresso">
-            
-        </div>        
-        <div class="ativacao">
-            <div>
-                <button class="aquecimento">Aquecimento</button>
-            </div>
-            <div>
-                <button class="iniciorapido">Inicio Rápido</button>
-            </div>
-            <div>
-                <button class="pausa">Pausa/Cancelamento</button>
-            </div>
-        </div>
-        <div class="programas">
-
-        </div>
-    </div>
-    <div class="opcoesesquerda">
-      <div class="teclado">
-        <div class="linha">
-            <div class="botao">7</div>
-            <div class="botao">8</div>
-            <div class="botao">9</div>
-        </div>
-        <div class="linha">
-            <div class="botao">4</div>
-            <div class="botao">5</div>
-            <div class="botao">6</div>
-        </div>
-        <div class="linha">
-            <div class="botao">1</div>
-            <div class="botao">2</div>
-            <div class="botao">3</div>
-        </div>
-        <div class="linha">
-            <div class="botao">0</div>            
-        </div>
-     </div>
-     <div class="cadastroprograma">
-         <div>
-             <label>Cadastro de Programa:</label>
-         </div>
-         <div>
-             <label>Nome:</label>
-         </div>
-         <div>
-             <input type="text" class="nome"/>
-         </div>
-         <div>
-                <label>Alimento:</label>
-         </div>
-         <div>
-                <input type="text" class="alimento" />
-         </div>
-         <div>
-                <label>Tempo: (00:00)</label>
-         </div>
-         <div>
-                <input type="text" class="tempo" />
-         </div>
-         <div>
-            <label>Potencia: (1-10)</label>
-         </div>
-         <div>
-            <input type="text" class="potencia" />
-         </div>
-            <div>
-                <label>Progresso: ($,#,%,etc.)</label>
-            </div>
-            <div>
-                <input type="text" class="progresso" />
-            </div>
-         <div>
-             <label>Instruções:</label>
-         </div>
-         <div>
-             <textarea class="instrucoes"></textarea>
-         </div>
-         <div>
-             <button>Cadastrar</button>
-         </div>
-         <div class="mensagem">
-             
-         </div>
-     </div>
-    </div>
-</div>
-
 <script>
-    
-    //Apaga token
-    document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/";
-    
-    // ativa ou desativa timer de progresso.
-    var ativatimer = false;
-    
-    $(document).ready(() => 
-    {       
-                
-        $(".radio:first").trigger("click");
+    $(document).ready(() =>
+    {
+        $("input[type='hidden']#timer").val("00:00");
+        $("input[type='hidden']#potencia").val("0");
+        $("input[type='hidden']#Id").val("0");
 
-        $(".dadosdigitais").on("keydown",(event) =>
+        $("#btn-timer").on("click",() =>
         {
-            event.preventDefault();
+            $("div.digital-display:first").html($("input[type='hidden']#timer").val());
+            $("input[type='hidden']#timer").addClass("select");
+            $("input[type='hidden']#potencia").removeClass("select");
+            $("div.teclado").css("display","block");
+            $("div.botoes_plusminus").css("display","none");
         });
 
-        listaprogramas();
-
-        $("div.microondascorpo > div.opcoesesquerda > div.teclado > div.linha > div.botao").on("click",(event) =>
+        $("#btn-potencia").on("click",() =>
         {
-            var obj = event.target;
-            var tipo = $(".radio:checked").val();
-
-            //Timer
-            if(tipo == 0)
-            {
-                var valor = $(".dadosdigitais:first").val();
-                                
-                if(valor.indexOf(":") > -1)
-                {
-                    var split = valor.split(":");                    
-                    valor = split.join("").toString();
-                }
-                
-                valor += $(obj).text();                
-                
-                if(valor.length > 3)
-                {
-                    valor = "";
-                }
-                
-                if(valor.length > 2)
-                {
-                    var pri = valor.substr(0,1);
-                    var seg = valor.substr(1,2);
-
-                    valor = pri + ":" + seg;
-                }
-                
-                $(".dadosdigitais:first").val(valor);
-            }
-
-            //Potência
-            if(tipo == 1)
-            {
-                $(".dadosdigitais:last").val($(obj).text());                
-            }
+            $("div.digital-display:first").html($("input[type='hidden']#potencia").val());
+            $("input[type='hidden']#timer").removeClass("select");
+            $("input[type='hidden']#potencia").addClass("select");
+            $("div.teclado").css("display","none");
+            $("div.botoes_plusminus").css("display","block");
         });
 
-        //Aquecimento
-        $("button.aquecimento:first").on("click",(event) => 
-        {               
-            var _id = $("div.timerpotencia > input.index:first").val();
-                _id = _id == "" ? -1 : parseInt(_id);
-            
-            var timer = $(".dadosdigitais:first").val();
-            var potencia = $(".dadosdigitais:last").val();
-            potencia = potencia == "" ? "10" : potencia;
-            
-            if(timer == "" || potencia == "")
-            {
-                $(".progresso:first").html("<span style='color:red'>Timer e Potência devem ser preenchidos.</span>");
-                return;
-            }
-
-            var dados = 
-            {                
-                id:_id,
-                tempo: timer,
-                potencia: potencia
-            }; 
-            
-            iniciaaquecimento(dados);            
-        });
-
-        //inicio rápido
-        $("button.iniciorapido:first").on("click",(event) => 
-        {            
-            var _id = $("div.timerpotencia > input.index:first").val();
-                _id = _id == "" ? -1 : parseInt(_id);
-            
-            var dados =
-            {                
-                id:_id,
-                tempo: "0:30",
-                potencia: "10"
-            };
-
-            iniciaaquecimento(dados);            
-        });
-        
-        //Pausa-Cancelamento
-        $("button.pausa:first").on("click",(event) => 
+        $("div.teclado > button.teclado-button").on("click", (event) =>
         {
-            var tokenexist = document.cookie.split('; ').find(row => row.startsWith('token=')) === undefined;
-            var token = !tokenexist ? document.cookie.split('; ').find(row => row.startsWith('token=')).split('=')[1] : "";
-            
-            $.ajax({
-                url: '/api/Pausa',
-                type: 'GET',
-                headers: {
-                'Authorization': 'Bearer ' + token
-                },
-                contentType: 'application/json',
-                data: JSON.stringify({}),
-                success: function(response)
-                {                    
-                    
-                    if(response.mensagem.indexOf("span") > -1)
-                    {
-                     $(".progresso:first").html(response.mensagem);
-                    }
-                                        
-                    if(response.pararProgresso)
-                    {
-                        ativatimer = false;
+             let obj = event.target;
+             let timerval = $("input[type='hidden']#timer").val();
+             let _obj = $("input[type='hidden']#timer").eq(0);
+             $(_obj).val(timerval.substring(1) + $(obj).text());
+             _keyupnum(_obj,["0","0",":","0","0"],4);
+             $("div.digital-display:first").html($(_obj).val());
+        });
 
-                        //Limpa campos
-                        $(".dadosdigitais").val("");
-                    }
-                },
-                error: function(xhr, status, error)
-                {
-                   if(xhr.status == 401)
-                    {
-                        $(".progresso:first").html("<span style='color:red'>Token inválido ou expirado.</span>");
-                        ativatimer = false;
-                    }
-            }
-                });                
-        });       
-        
-                
-        //Ativa Programas 
-        $("div.microondascorpo > div.opcoes > div.programas").on("click",(event) => 
-         {
-             var obj = event.target;
-             obj = $(obj).parent();
-             obj = $(obj).parent();             
+        $("div.botoes_plusminus > button#btn-minus").on("click",() =>
+        {
+             let obj = $("input[type='hidden']#potencia").eq(0);
+             $(obj).val(parseInt($(obj).val()) - 1);
+             $("div.digital-display:first").html($(obj).val());
+        });
 
-             var id = $(obj).find("div:first").prop("id");
-             $("div.timerpotencia > input.index:first").val(id);
+        $("div.botoes_plusminus > button#btn-plus").on("click",() =>
+        {
+             let obj = $("input[type='hidden']#potencia").eq(0);
+             $(obj).val(parseInt($(obj).val()) + 1);
+             $("div.digital-display:first").html($(obj).val());
+        });
 
-             var tempo = $(obj).find("div > label").eq(3).html().substr(8);
-             var potencia = $(obj).find("div > label").eq(4).html().substr(10);             
+        //Botão Aquecimento
+        $("button#btn-aquecimento").on("click",(event) =>
+        {
+            //desabilita todos os botões
+            $("button").prop("disabled",true);
+            //habilita aquecimento
+            $(event.target).prop("disabled",false);
+            //Habilita botão pausa.
+            $("#btn-pausa").prop("disabled",false);
+
+            let id = $("input[type='hidden']#Id").val();
+            let tempo = $("input[type='hidden']#timer").val();
+            let potencia = $("input[type='hidden']#potencia").val();
+
+            let dados = { Id: id, Tempo: tempo, Potencia: potencia };
+
+            ajaxjson("/MicroOndas/PostAquecimento", "POST", dados, (data) =>
+            {
+               $("label.mensagem").text(data.retorno);
+               $("label.mensagem").css("color", data.cor);
+            });
+
+        });
+
+        //Botão inicio Rápido
+        $("button#btn-iniciorapido").on("click",(event) =>
+        {
+             //desabilita todos os botões
+             $("button").prop("disabled",true);
+             //habilita aquecimento
+             $("button#btn-aquecimento").prop("disabled",false);
+              //Habilita botão pausa.
+             $("#btn-pausa").prop("disabled",false);
+
+            $("input[type='hidden']#Id").val("0");
+            $("input[type='hidden']#timer").val("00:30");
+            $("input[type='hidden']#potencia").val("10");             
              
-             $(".dadosdigitais:first").val(tempo);
-             $(".dadosdigitais:last").val(potencia);
-             $("div.timerpotencia > input.index:first").val(id);
+            $("button#btn-aquecimento").trigger("click");
+        });
 
-             $("button.aquecimento:first").trigger("click");
-         });
-
-         //botão cadastrar
-         $("body > div.logincadastrocorpo > div.cadastrarcorpo > div:nth-child(8) > button").on("click",(event) => 
+         //Botão Pausa/Cancelamento
+         $("button#btn-pausa").on("click",(event) =>
          {
-             var _usuario = $("div.logincadastrocorpo > div.cadastrarcorpo > div:nth-child(3) > input[type=text]").val();
-             var _senha = $("div.logincadastrocorpo > div.cadastrarcorpo > div:nth-child(5) > input[type=text]").val();
-             var _confsenha = $("div.logincadastrocorpo > div.cadastrarcorpo > div:nth-child(7) > input[type=text]").val();
-
-             var dados= 
-             {
-                 login: _usuario,
-                 senha: _senha,
-                 resenha: _confsenha
-             };
-
-            $.ajax({
-                url: '/api/Cadastrar',
-                type: 'POST',
-                contentType: 'application/json; charset=utf-8',
-                data: JSON.stringify(dados),
-                success: function(response)
-                {
-                    $("div.logincadastrocorpo > div.cadastrarcorpo > div.mensagem").html(response.mensagem);
-
-                    $("div.logincadastrocorpo > div.cadastrarcorpo > div:nth-child(3) > input[type=text]").val("");
-                    $("div.logincadastrocorpo > div.cadastrarcorpo > div:nth-child(5) > input[type=text]").val("");
-                    $("div.logincadastrocorpo > div.cadastrarcorpo > div:nth-child(7) > input[type=text]").val("");
-                }
-             });
+              ajaxjson("/MicroOndas/GetPausa", "Get", {}, (data) =>
+              {
+                 $("label.mensagem").text(data.retorno);
+                 $("label.mensagem").css("color", data.cor);
+              });
          });
 
-         //botão logar
-         $("div.logincadastrocorpo > div.logincorpo > div:nth-child(6) > button").on("click",(event) =>
+         //Carrega Programas padrão
+         ajaxjson("/MicroOndas/GetDadosPrograma", "Get", {}, (data) =>
          {
-             var _usuario = $("div.logincadastrocorpo > div.logincorpo > div:nth-child(3) > input[type=text]").val();
-             var _senha = $("div.logincadastrocorpo > div.logincorpo > div:nth-child(5) > input[type=text]").val();
+               $("div.lista-programas").html(data.retorno);
+               $("div.lista-programas").append('<div class="dadosprograma"></div>');
 
-             var dados=
-             {
-                 login: _usuario,
-                 senha: _senha                 
-             };
-
-             $.ajax({
-                url: '/api/Logar',
-                type: 'POST',
-                contentType: 'application/json; charset=utf-8',
-                data: JSON.stringify(dados),
-                success: function(response)
-                {   
-                    
-                    document.cookie = "token=" + response.token + "; path=/";
-                    $("div.logincadastrocorpo > div.logincorpo > div.mensagem").html(response.mensagem);
-
-                    $("div.logincadastrocorpo > div.logincorpo > div:nth-child(3) > input[type=text]").val("");
-                    $("div.logincadastrocorpo > div.logincorpo > div:nth-child(5) > input[type=text]").val("");
-                }
-             });
-             
+                //Clique no botão programa
+                $("div.lista-programas > button").on("click",clickBotaoPrograma);
          });
 
-         //Mascara campo tempo
-         $("div.microondascorpo > div.opcoesesquerda > div.cadastroprograma > div:nth-child(7) > input").on("keyup",(event) => 
-         {
-             var obj = event.target;
+         $("#btn-timer").trigger("click");
 
-             var _val = $(obj).val();
-             var arr = _val.split("");
-             var arrformat = [/[0-9]|:/gm,/[0-9]|:/gm,":",/[0-9]|:/gm,/[0-9]|:/gm];
-             var retorno = "";
-
-             for(var i in arr)
-             {
-                 if(arrformat[i] === undefined)
-                 {
-                     continue;
-                 }
-                 
-                 var format = RegExp(arrformat[i]);                 
-                                                     
-                 if(format.test(arr[i]))
-                 {
-                    retorno += arr[i];
-                 }                                  
-             }
-             
-             $(obj).val(retorno);             
-         });
-
-         //Máscara campo potência
-         $("div.microondascorpo > div.opcoesesquerda > div.cadastroprograma > div:nth-child(9) > input").on("keyup",(event) => 
-         {
-             var obj = event.target;
-
-             var _val = $(obj).val();
-             var arr = _val.split("");
-             var arrformat = [/[0-9]|:/gm,/[0]|:/gm];
-             var retorno = "";
-
-             for(var i in arr)
-             {
-                 if(arrformat[i] === undefined)
-                 {
-                     continue;
-                 }
-
-                 var format = RegExp(arrformat[i]);
-                 
-                 if(format.test(arr[i]))
-                 {
-                    retorno += arr[i];
-                 }
-             }
-
-             $(obj).val(retorno);
-         });
-
-         //Máscara campo caracter
-         $("div.microondascorpo > div.opcoesesquerda > div.cadastroprograma > div:nth-child(11) > input").on("keyup",(event) =>
-         {
-             var obj = event.target;
-
-             var _val = $(obj).val();
-             var arr = _val.split("");
-             var arrformat = [/[^0-9a-zA-Z ]/gm];
-             var retorno = "";
-
-             for(var i in arr)
-             {
-                 if(arrformat[i] === undefined)
-                 {
-                     continue;
-                 }
-
-                 var format = RegExp(arrformat[i]);
-
-                 if(format.test(arr[i]))
-                 {
-                    retorno += arr[i];
-                 }
-             }
-
-             $(obj).val(retorno);
-         });
-
-         //Cadastrar Programa
-         $("div.microondascorpo > div.opcoesesquerda > div.cadastroprograma > div:nth-child(14) > button").on("click",(event) =>
-         {
-             var obj = event.target;
-
-             var _nome = $("div.microondascorpo > div.opcoesesquerda > div.cadastroprograma > div:nth-child(3) > input").val();
-             var _alimento = $("div.microondascorpo > div.opcoesesquerda > div.cadastroprograma > div:nth-child(5) > input").val();
-             var _tempo = $("div.microondascorpo > div.opcoesesquerda > div.cadastroprograma > div:nth-child(7) > input").val();
-             var _potencia = $("div.microondascorpo > div.opcoesesquerda > div.cadastroprograma > div:nth-child(9) > input").val();
-             var _progresso = $("div.microondascorpo > div.opcoesesquerda > div.cadastroprograma > div:nth-child(11) > input").val();
-             var _instrucoes = $("div.microondascorpo > div.opcoesesquerda > div.cadastroprograma > div:nth-child(13) > textarea").val();
-
-             var dados = 
-             {
-                    nome: _nome,
-                    alimento: _alimento,
-                    tempo: _tempo,
-                    potencia: _potencia == "" ? 0 : parseInt(_potencia),
-                    progresso: _progresso,
-                    instrucoes: _instrucoes
-             }
-                                       
-             var tokenexist = document.cookie.split('; ').find(row => row.startsWith('token=')) === undefined;
-             var token = !tokenexist ? document.cookie.split('; ').find(row => row.startsWith('token=')).split('=')[1] : "";
-             
-             $.ajax({
-                url: '/api/CadastrarPrograma',
-                type: 'POST',
-                headers: {
-                  'Authorization': 'Bearer ' + token
-                },
-                contentType: 'application/json',
-                data: JSON.stringify(dados),
-                success: function(response)
-                {
-                    $("div.microondascorpo > div.opcoesesquerda > div.cadastroprograma > div.mensagem").html(response.mensagem);
-                    listaprogramas();
-                },
-                error: function(xhr, status, error)
-                {
-                    if(xhr.status == 401)
-                    {
-                        $("div.microondascorpo > div.opcoesesquerda > div.cadastroprograma > div.mensagem").html("<span style='color:red'>Token inválido ou expirado.</span>");
-                        ativatimer = false;
-                    }
-                }
-             });
-             
-         });
+        dalayTimer();
     });
 
-    var iniciaaquecimento = (dados) =>
-    {        
-        var tokenexist = document.cookie.split('; ').find(row => row.startsWith('token=')) === undefined;        
-        var token = !tokenexist ? document.cookie.split('; ').find(row => row.startsWith('token=')).split('=')[1] : "";
-                
-                
-          $.ajax({
-           url: '/api/Aquecimento',
-           type: 'POST',
-           headers: {
-                'Authorization': 'Bearer ' + token
-             },
-           contentType: 'application/json',
-           data: JSON.stringify(dados),
-           success: function(response)
-           {               
-
-               if(response.mensagem.indexOf("span") > -1)
-               {
-                $(".progresso:first").html(response.mensagem);
-               }
-                    
-                // Ativa timer de progresso
-                if(!ativatimer)
-                {
-                   ativatimer = true;
-                   delayTimer();
-                }                
-           },
-           error: function(xhr, status, error) 
+     let dalayTimer = async () =>
+         {
+            do
             {
-                if(xhr.status == 401)
+                let id = $("input[type='hidden']#Id").val();
+                let dados =
                 {
-                    $(".progresso:first").html("<span style='color:red'>Token inválido ou expirado.</span>");
-                    ativatimer = false;
-                }                
-            }
-          });
-        
-    }
-    //Timer que valida progresso do aquecimento
-    
-    var delayTimer = async () =>
-    {
-        do
-        {
-               if(!ativatimer)
-               {
-                   break;
-               }
-                // Chama API para verificar progresso
-             
-                var _id = $("div.timerpotencia > input.index:first").val();
-                _id = _id == "" ? -1 : parseInt(_id);
+                    Id: id
+                };
 
-               var dados =  
-               {
-                   id: _id
-               }
-                
-                $.ajax({
-                url: '/api/Progresso',
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify(dados),
-                success: function(response)
-                {                    
-                    
-                    if(response.mensagem.indexOf("span") > -1)
+                ajaxjson("/MicroOndas/PostProgresso", "POST", dados, (data) =>
+                 {
+                    if(data.cor == "yellow")
                     {
-                     $(".progresso:first").html(response.mensagem);
-
-                     //Zera id de programa
-                     if(response.mensagem == "<span style='color:green'>Aquecimento finalizado!</span>")
-                     {
-                         $("div.timerpotencia > input.index:first").val("-1");
-                     }
-
+                         $("label.texto_progresso").text(data.retorno);
+                         $("label.texto_progresso").css("color",data.cor);
                     }
-
-                    if(response.pararProgresso)
+                    else if(data.cor == "blue" || data.cor == "green")
                     {
-                        ativatimer = false;                        
-                    }                    
-                }
-                });
-                
-              await new Promise(resolve => setTimeout(resolve, 1000));
-        }
-        while(ativatimer);
-    };
-    
-    //Carrega Programas do BD
-    var listaprogramas = () => 
-    {        
-        $.ajax({
-            url: '/api/DadosPrograma',
-            type: 'GET',
-            contentType: 'application/json; charset=utf-8',
-            data: JSON.stringify({}),
-            success: function(response)
-            {
-                 $(".programas:first").html(response.mensagem);
+                         //habilita todos os botões
+                         $("button").prop("disabled",false);
+
+                         $("label.mensagem").text(data.retorno);
+                         $("label.mensagem").css("color",data.cor);
+                    }
+                 });
+
+               await new Promise(resolve => setTimeout(resolve, 1000));
             }
-        });
+            while(true);
+         };
+
+     let clickBotaoPrograma = (event) =>
+     {
+         let obj = event.target;
+         let id = $(obj).attr("id");
+
+         ajaxjson("/MicroOndas/PostDadosProgramaPorId", "POST", {Id:id}, (data) =>
+         {
+               $("input[type='hidden']#Id").val(data.id);
+               $("input[type='hidden']#timer").val(data.tempo);
+               $("input[type='hidden']#potencia").val(data.potencia);
+
+               $("button#btn-aquecimento").trigger("click");
+         });
+     };
+
+    let OnMouseEnter = (obj) =>
+    {
+         let coord = coordenadas(obj);
+
+         let x = coord.right;
+         let y = coord.bottom;
+         let id = $(obj).attr("id");
+
+         $("div.lista-programas > div").css("top",y);
+         $("div.lista-programas > div").css("left",x);
+         $("div.lista-programas > div").css("padding","2%");
+
+         ajaxjson("/MicroOndas/PostDescricaoPrograma", "POST", {Id:id}, (data) =>
+         {
+             $("div.lista-programas > div").html(data.retorno);
+         });
+
+         $("div.lista-programas > div").css("display","block");
+
     };
-    
+
+    let OnMouseLeave = (obj) =>
+    {
+          $("div.lista-programas > div").css("display","none");
+    };
+
 </script>
+
+<div class="corpo_mensagem">
+    <label class="mensagem"></label>
+</div>
+<div class="microondas">
+    <div class="nivel01 esquerda">
+        <div class="corpo_progresso">
+            <label class="texto_progresso"></label>
+        </div>
+        <div class="lista-programas">
+        </div>
+    </div>
+    <div class="nivel01 direita">
+        <div class="digital-display"></div>
+        <div class="botoes">
+            <button id="btn-timer" class="custom-button">Timer</button>
+            <button id="btn-potencia" class="custom-button">Potência</button>
+        </div>
+        <div class="teclado">
+            @for (int i = 1; i <= 9; i++)
+            {
+                <button class="@i teclado-button">@i</button>
+            }
+            <button class="0 teclado-button">0</button>
+        </div>
+        <div class="botoes_plusminus">
+            <button id="btn-minus" class="custom-button">-</button>
+            <button id="btn-plus" class="custom-button">+</button>
+            <div class="espaco_custom_button"></div>
+        </div>
+        <div class="botoes_acoes">
+            <button id="btn-aquecimento" class="custom-button">Aquecimento</button>
+            <button id="btn-iniciorapido" class="custom-button">Inicio Rápido</button>
+            <button id="btn-pausa" class="custom-button">Pausa/Cancelamento</button>
+        </div>
+    </div>
+    <input type="hidden" id="timer" class="hdisplay" />
+    <input type="hidden" id="potencia" class="hdisplay" />
+    <input type="hidden" id="Id" class="hdisplay" />
+</div>

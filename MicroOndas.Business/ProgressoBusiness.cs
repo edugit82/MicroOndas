@@ -1,25 +1,35 @@
-﻿using MicroOndas.Business;
+﻿using MicroOndas.DataBase;
 using MicroOndas.DataBase.Models;
-using MicroOndas.DataBase;
-using System.Data.Entity;
+using MicroOndas.Public;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace MicroOndas.Interface.Business
+namespace MicroOndas.Business
 {
-    public class ProgressoBusiness
+    public class ProgressoBusiness : _Business
     {
-        public void Business(ref RetornoAquecimentoViewModel _retorno, IConfiguration _configuration, ProgressoViewModel progresso) 
+        public ProgressoBusiness(ProgressoViewModel viewmodel, bool logado)
         {
-            RetornoAquecimentoViewModel retorno = _retorno;
-
-            LogDeErros.Log(ref retorno, () =>
+            //Está logado
+            if (!logado)
             {
-                string conn = _configuration["Conn"] ?? "";
-                conn = CryptoHelper.Decrypt(conn);
+                this.Retorno = "Token inválido!";
+                this.Cor = "red";
 
-                using (Context ctx = new Context(conn))
+                return;
+            }
+
+            bool gravaerro = true;
+            try
+            {
+                using (Context ctx = new Context())
                 {
                     //Ativos
-                    List<AquecimentoModel> ativos = ctx.Aquecimento.ToList().Where(a => a.Ativo == true && !a.Cancelado).ToList();
+                    List<AquecimentoModel> ativos = ctx.Aquecimento.ToList().Where(a => a.Ativo && !a.Cancelado).ToList();
 
                     //Valida se Existe regitro
                     bool exist = ativos.Any();
@@ -29,9 +39,9 @@ namespace MicroOndas.Interface.Business
                     {
                         string caracter = ".";
                         //Pega o caracter de carregamento
-                        if (progresso.Id > -1)
+                        if (viewmodel.Id > -1)
                         {
-                            ProgramadoModel? programado = ctx.Programado.ToList().Where(a => a.Index == progresso.Id).FirstOrDefault();
+                            ProgramadoModel? programado = ctx.Programado.ToList().Where(a => a.Index == viewmodel.Id).FirstOrDefault();
                             caracter = programado?.Caracter ?? caracter;
                         }
 
@@ -40,7 +50,7 @@ namespace MicroOndas.Interface.Business
                         if (last.Fim > DateTime.Now)
                         {
                             //Tempo faltando
-                            int faltando = (int)(last.Fim - DateTime.Now).TotalSeconds;                            
+                            int faltando = (int)(last.Fim - DateTime.Now).TotalSeconds;
 
                             //Intervalos
                             int intervalos = (int)(faltando / last.Potencia);
@@ -52,9 +62,9 @@ namespace MicroOndas.Interface.Business
 
                             //Monta imagem progresso
                             for (var i = 0; i < intervalos; i++)
-                                retorno.Mensagem += spontencia + " ";
+                                this.Retorno += spontencia + " ";
 
-                            retorno.Mensagem = "<span style='color:blue;'>" + retorno.Mensagem + "</span>";
+                            this.Cor = "yellow";
                             return;
                         }
                         else
@@ -65,9 +75,11 @@ namespace MicroOndas.Interface.Business
                             ctx.Entry(last).State = EntityState.Modified;
                             ctx.SaveChanges();
 
-                            retorno.Mensagem = "<span style='color:green'>Aquecimento finalizado!</span>";
+                            this.Retorno = "Aquecimento finalizado!";
+                            this.Cor = "green";
+
                             return;
-                        }
+                        }                        
                     }
 
                     //Pausados
@@ -77,12 +89,21 @@ namespace MicroOndas.Interface.Business
 
                     if (exist)
                     {
-                        retorno.Mensagem = "<span style='blue'>Aquecimento pausado!</span>";
+                        this.Retorno = "Aquecimento pausado!";
+                        this.Cor = "blue";
                     }
                 }
-            });
-
-            _retorno = retorno;
+            }
+            catch (Exception ex)
+            {
+                if (gravaerro)
+                    Excecao.GravaExcecao(ex);
+            }
+            finally
+            {
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
+            }
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿﻿
+<!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="utf-8" />
@@ -6,13 +7,134 @@
     <title>@ViewData["Title"]</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script>
+        let count = "";
+        let _id = "";
+
+        let ajax = (_url, tipo, dados, _contenttype, _datatype, _success) => {
+            $.ajax({
+                url: _url,
+                type: tipo,
+                contentType: "application/" + _contenttype + "; charset=utf-8",
+                data: JSON.stringify(dados),
+                dataType: _datatype,
+                success: _success,
+                error: function (xhr, status, error) {
+                    console.log("Erro: " + error + ", Status: " + status + ", Xhr: " + xhr);
+                },
+                beforeSend: function (xhr) {
+                    //$("div#fullscreenOverlay").css("display", "block");
+                },
+                complete: function (xhr, status) {
+                    //$("div#fullscreenOverlay").css("display", "none");
+                }
+            });
+        };
+
+        let ajaxscript = (_url, tipo, dados, _success) => {
+            ajax(_url, tipo, dados, "javascript", "script", _success);
+        };
+
+        let ajaxjson = (_url, tipo, dados, _success) => {
+            ajax(_url, tipo, dados, "json", "json", _success);
+        };
+
+        let buildscript = (_url) => {
+            ajaxscript(_url, 'GET', {}, null);
+        };
+
+        let objbase = () => {
+            count = $("*").length.toString();
+            _id = "#" + count;
+        };
+
+        let _keyupformat = (obj,_keyupformat,_format,_length) =>
+        {
+            let value = $(obj).val();
+            let regex = new RegExp(_keyupformat,"g");
+            let _match = value.match(regex);
+
+            if(_match == null)
+            {
+                $(obj).val("");
+                return;
+            }
+
+            if(_match.length >= _length)
+            {
+               let j = 0;
+               for(let i in _format)
+               {
+                   if(i == 2)
+                    continue;
+
+                    if(_match[j] === undefined)
+                    break;
+
+                    _format[i] = _match[j];
+                   j++;
+               }
+
+               $(obj).val(_format.join(""));
+            }
+        };
+
+        let _keyupnum = (obj,_format,_length) =>
+        {
+            return  _keyupformat(obj,"[0-9]",_format,_length);
+        };
+
+        let _keyupspc = (obj,_format,_length) =>
+        {
+            return  _keyupformat(obj,"[^0-9a-zA-Z]",_format,_length);
+        };
+
+        let coordenadas = (obj) =>
+        {
+             let _top = obj.offsetTop;
+             let _left = obj.offsetLeft;
+             let _width = obj.offsetWidth;
+             let _height = obj.offsetHeight;
+             let _bottom = _top + _height;
+             let _right = _left + _width;
+
+              let dados = {
+                 top: _top,
+                 left: _left,
+                 width: _width,
+                 height: _height,
+                 bottom: _bottom,
+                 right: _right
+             };
+
+             return dados;
+        };
+    </script>   
+    <style>
+        *
+        {
+            width:100%;
+            float:left;
+        }
+    </style>
 </head>
 <body>
+    <div class="cabecalho" style="margin-bottom:0.5%;padding-left:30%">
+        <a class="btn btn-link" style="width:10%;" href="@Url.Action("Cadastrar", "MicroOndas")">Cadastrar</a>
+        <a class="btn btn-link" style="width:10%;" href="@Url.Action("Logar", "MicroOndas")">Logar</a>
+        <a class="btn btn-link" style="width:10%;" href="@Url.Action("MicroOndas", "MicroOndas")">MicroOndas</a>
+        <a class="btn btn-link" style="width:10%;" href="@Url.Action("CadastrarPrograma", "MicroOndas")">CadastrarPrograma</a>
+    </div>
     @RenderBody()
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js" integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy" crossorigin="anonymous"></script>
-    
+
     @await RenderSectionAsync("Scripts", required: false)
+
+    <!-- Fullscreen overlay div -->
+    <div id="fullscreenOverlay" style="padding-top:18.5%;padding-bottom:15%;position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.5); z-index: 9999; display: none;">
+        <img class="animation--Gl63I" srcset="https://cdn.pixabay.com/animation/2023/11/09/03/05/03-05-45-320_256.gif 1x, https://cdn.pixabay.com/animation/2023/11/09/03/05/03-05-45-320_512.gif 2x" src="https://cdn.pixabay.com/animation/2023/11/09/03/05/03-05-45-320_512.gif" alt="Cinza, Gradiente, Carregador, Carregando" style="max-width: 20%; max-height: 60%;margin-left:40%;margin-right:40%;margin-top:0;">
+    </div>
 </body>
 </html>

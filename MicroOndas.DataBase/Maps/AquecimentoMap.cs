@@ -1,19 +1,19 @@
-﻿using MicroOndas.DataBase.Models;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.Data.Entity.ModelConfiguration.Configuration;
-using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MicroOndas.DataBase.Models;
 
 namespace MicroOndas.DataBase.Maps
 {
     internal class AquecimentoMap
     {
-        public AquecimentoMap(ref DbModelBuilder modelBuilder)
+        public AquecimentoMap(ref ModelBuilder modelBuilder)
         {
-            Action<EntityMappingConfiguration<AquecimentoModel>> map = config =>
+            Action<EntityTypeBuilder<AquecimentoModel>> map = config =>
             {
                 config.Property(p => p.Index).HasColumnName("Index");
                 config.Property(p => p.Inicio).HasColumnName("Inicio");
@@ -26,7 +26,7 @@ namespace MicroOndas.DataBase.Maps
                 config.ToTable("Aquecimento");
             };
 
-            modelBuilder.Entity<AquecimentoModel>().Map(map);
+            modelBuilder.Entity(map);
             modelBuilder.Entity<AquecimentoModel>().HasKey(k => k.Index);
         }
     }

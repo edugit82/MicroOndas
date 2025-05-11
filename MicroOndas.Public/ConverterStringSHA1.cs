@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MicroOndas.Business
+namespace MicroOndas.Public
 {
     public static class ConverterStringSHA1
     {

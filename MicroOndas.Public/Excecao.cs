@@ -1,45 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MicroOndas.Business
-{
-    public static class LogDeErros
-    {
-        public static void Log(ref RetornoAquecimentoViewModel viewmodel,Action action)
-        {
-            try
-            {
-                action();
-            }
-            catch (Exception ex)
-            {
-                GravaExcecao(ref viewmodel,ex);
-            }
-            finally
-            {
-                GC.Collect();
-                GC.WaitForPendingFinalizers();
-            }
-        }
-        private static void GravaExcecao(ref RetornoAquecimentoViewModel viewmodel, Exception ex)
+namespace MicroOndas.Public
+{    
+    public static class Excecao
+    {        
+        public static void GravaExcecao(Exception? ex)
         {
             try
             {
                 string texto = "";
                 texto = string.Format("   Hora: {0:HH:mm:ss}{1}", DateTime.Now, Environment.NewLine);
-                texto += string.Format("   Mensagem: {0}{1}{1}", ex.Message, Environment.NewLine);
+                texto += string.Format("   Mensagem: {0}{1}{1}", ex?.Message, Environment.NewLine);
                 do
                 {
-                    texto += ex.StackTrace + Environment.NewLine;
-                    ex = ex.InnerException;
+                    texto += ex?.StackTrace + Environment.NewLine;
+                    ex = ex?.InnerException;
                 }
-                while (!(ex is null));
-
-                viewmodel.Mensagem = texto;
+                while (ex is not null);                
 
                 string folder = Environment.CurrentDirectory + @"\Error_Folder";
                 string file = folder + @"\Error.txt";
@@ -70,4 +51,3 @@ namespace MicroOndas.Business
         }
     }
 }
-
