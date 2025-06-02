@@ -1,0 +1,13 @@
+﻿/*\MicroOndas.Interface\reactapp\src\componentes\forms\submit\index01.module.css*/
+
+.index01 {
+    border-style: solid;
+    border-color: yellow;
+    border-width: 2px;
+    background-color: black;
+    color: yellow;
+    font-weight: bold;
+    width: 15%;
+    margin-top: 2%;
+    margin-left: 45%;
+}

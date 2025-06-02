@@ -1,0 +1,22 @@
+﻿/*\MicroOndas\MicroOndas.Interface\reactapp\src\componentes\dadosprogramas\index01.module.css*/
+.index01 {
+    
+}
+
+.programa {
+    background-color: black;
+    color: yellow;
+    width: 20%;
+    height: 10vh;
+    margin-top: 4%;
+    margin-left: 4%;
+}
+
+.programaswindow {
+    top:-80vh;
+    position: fixed;
+    background-color: white;
+    color: black;
+    height: 30vh;
+    z-index:1000;
+}

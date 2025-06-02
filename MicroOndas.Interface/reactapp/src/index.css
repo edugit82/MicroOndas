@@ -1,0 +1,34 @@
+﻿* {
+    position: relative;
+    float: left;
+    width: 100%;
+}
+
+body {
+    padding-top: 2%;
+    padding-left: 2%;
+    padding-right: 2%;
+    background-color: black;
+    width:95%;
+}
+
+.borda {
+    border-style: solid;
+    border-color: yellow;
+    border-width: 2px;
+}
+
+input[type='button'].borda:hover {
+    background-color: yellow;
+    color: black;
+}
+
+#telaloading {
+    position: absolute;
+    top: 0%;
+    left: 0%;
+    width: 100%;
+    height: 100vh;
+    z-index: 1000;
+    display: none;
+}

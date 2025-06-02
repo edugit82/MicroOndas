@@ -15,8 +15,17 @@ namespace MicroOndas.Business
 {
     public class LogarBusiness : _Business
     {
-        public LogarBusiness(LogarViewModel viewmodel) 
+        public LogarBusiness(LogarViewModel viewmodel, bool logado) 
         {
+            //Está logado
+            if (!logado)
+            {
+                this.Retorno = "Token inválido!";
+                this.Cor = "red";
+
+                return;
+            }
+
             bool gravaerro = true;
             try
             {

@@ -11,13 +11,19 @@ namespace MicroOndas.Business
         public CadastrarViewModel()
         {            
             Login = string.Empty;
+            LoginM = string.Empty;
             Senha = string.Empty;
-            ReSenha = string.Empty;
+            SenhaM = string.Empty;
+            Confirma = string.Empty;
+            ConfirmaM = string.Empty;
         }
 
         public string Login { get; set; }
+        public string LoginM { get; set; }
         public string Senha { get; set; }
-        public string ReSenha { get; set; }
+        public string SenhaM { get; set; }
+        public string Confirma { get; set; }
+        public string ConfirmaM { get; set; }
     }
 
     public class LogarViewModel
@@ -25,10 +31,14 @@ namespace MicroOndas.Business
         public LogarViewModel()
         {
             Login = string.Empty;
+            LoginM = string.Empty;
             Senha = string.Empty;
+            SenhaM = string.Empty;
         }
         public string Login { get; set; }
+        public string LoginM { get; set; }
         public string Senha { get; set; }
+        public string SenhaM { get; set; }
     }
     public class AquecimentoViewModel
     {
@@ -46,23 +56,31 @@ namespace MicroOndas.Business
         public CadastroProgramaViewModel()
         {
             Nome = string.Empty;
+            NomeM = string.Empty;
             Alimento = string.Empty;
+            AlimentoM = string.Empty;
             Tempo = string.Empty;
-            Potencia = 0;
+            TempoM = string.Empty;
+            Potencia = string.Empty;
+            PotenciaM = string.Empty;
             Progresso = string.Empty;
+            ProgressoM = string.Empty;
             Instrucoes = string.Empty;
+            InstrucoesM = string.Empty;
         }
         public string Nome { get; set; }
+        public string NomeM { get; set; }
         public string Alimento { get; set; }
+        public string AlimentoM { get; set; }
         public string Tempo { get; set; }
-        public int Potencia { get; set; }
+        public string TempoM { get; set; }
+        public string Potencia { get; set; }
+        public string PotenciaM { get; set; }
         public string Progresso { get; set; }
+        public string ProgressoM { get; set; }
         public string Instrucoes { get; set; }
-    }
-    public class ProgressoViewModel
-    {
-        public int Id { get; set; }
-    }
+        public string InstrucoesM { get; set; }
+    }    
     public class DescricaoProgramaViewModel
     {
         public int Id { get; set; }
@@ -72,5 +90,10 @@ namespace MicroOndas.Business
         public int Id { get; set; }
         public string? Tempo { get; set; }
         public int Potencia { get; set; }
+    }
+    public class BotaoTextoViewModel 
+    {
+        public int Tipo { get; set; }
+        public string? Texto { get; set; }
     }
 }

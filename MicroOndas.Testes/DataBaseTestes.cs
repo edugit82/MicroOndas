@@ -27,6 +27,7 @@ namespace MicroOndas.Testes
                 List<AquecimentoModel> listaaquecimento = ctx.Aquecimento.ToList();
                 List<LoginModel> listalogin = ctx.Login.ToList();
                 List<ProgramadoModel> listaprogramado = ctx.Programado.ToList();
+                List<VariaveisModel> listavariaveis = ctx.Variaveis.ToList();
             }
         }
         
@@ -56,7 +57,7 @@ namespace MicroOndas.Testes
                 ctx.SaveChanges();
 
                 //Insere dados
-                dados.ForEach(a => 
+                dados.ForEach(a =>
                 {
                     try
                     {
@@ -66,11 +67,11 @@ namespace MicroOndas.Testes
 
                         Debug.WriteLine("Dado inserido com sucesso!");
                     }
-                    catch (Exception ex) 
+                    catch (Exception ex)
                     {
                         Debug.WriteLine(string.Format("Mensagem: {0}", ex.Message));
                     }
-                }); 
+                });
             }
         }
         
@@ -356,6 +357,112 @@ namespace MicroOndas.Testes
 
                 });
                 ctx.SaveChanges();
+
+                ctx.Programado.Add(new ProgramadoModel()
+                {
+                    Nome = "Ovo",
+                    Alimento = "Ovo frito",
+                    Tempo = DateTime.Parse("01-01-1970 00:01:19"),
+                    Potencia = 1,
+                    Caracter = "$",
+                    Instrucoes = "Ovo frito é acompanhamento á diversos pratos."
+
+                });
+                ctx.SaveChanges();
+            }
+        }
+        /// <summary>
+        /// Teste de cadastro de variaveis, insere dados na tabela Variaveis.
+        /// </summary>
+        [Fact]
+        public void FeedVariaveis()
+        {
+            using (Context ctx = new Context())
+            {
+                //Remove todos
+                ctx.Database.ExecuteSqlRaw("truncate table Variaveis");
+                ctx.SaveChanges();
+                ctx.Variaveis.Add(new VariaveisModel()
+                {
+                    Descricao = "Timer",
+                    Valor = "00:00"
+                });
+                ctx.SaveChanges();
+                ctx.Variaveis.Add(new VariaveisModel()
+                {
+                    Descricao = "Potencia",
+                    Valor = "01"
+                });
+                ctx.SaveChanges();
+                ctx.Variaveis.Add(new VariaveisModel()
+                {
+                    Descricao = "Id",
+                    Valor = "-1"
+                });
+                ctx.SaveChanges();
+                ctx.Variaveis.Add(new VariaveisModel()
+                {
+                    Descricao = "MensagemDisplay",
+                    Valor = ""
+                });
+                ctx.SaveChanges();
+                ctx.Variaveis.Add(new VariaveisModel()
+                {
+                    Descricao = "MensagemProgresso",
+                    Valor = ""
+                });
+                ctx.SaveChanges();
+            }
+        }
+
+        /// <summary>
+        /// Teste de cadastro de variaveis, insere dados na tabela Variaveis.
+        /// </summary>
+        /// <returns></returns>
+        public static IEnumerable<object[]> VariaveisDados()
+        {
+            yield return new object[] { 1, "Timer", "00:00" };
+            yield return new object[] { 2, "Potencia", "10" };
+            yield return new object[] { 3, "Id", "0" };
+            yield return new object[] { 3, "MensagemDisplay", "" };
+            yield return new object[] { 3, "MensagemProgresso", "" };
+        }
+
+        /// <summary>
+        /// Teste Limpa tabela Variaveis
+        /// </summary>
+        [Fact]
+        public void LimpaVariaveis()
+        {
+            using (Context ctx = new Context())
+            {
+                //Limpa tabela
+                ctx.Database.ExecuteSqlRaw("truncate table Variaveis");
+                ctx.SaveChanges();
+            }
+        }
+
+        [Theory]
+        [MemberData(nameof(VariaveisDados))]
+        public void CadastraVariaveis(string nome, string valor)
+        {            
+            using (Context ctx = new Context())
+            {                
+                //Insere dados
+                try
+                {
+                    ctx.Variaveis.Add(new VariaveisModel()
+                    {                        
+                        Descricao = nome,
+                        Valor = valor
+                    });
+                    ctx.SaveChanges();
+                    Debug.WriteLine("Dado inserido com sucesso!");
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(string.Format("Mensagem: {0}", ex.Message));
+                }
             }
         }
     }

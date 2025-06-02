@@ -1,0 +1,24 @@
+﻿/*MicroOndas.Interface\reactapp\src\componentes\ladodireito\index01.module.css*/
+.index01 {
+    width: 40%;
+    height: 89.3lvh;
+}
+
+    .index01 > div.botoes 
+    {
+        margin-top: 4%;
+    }
+    .index01 > div.interatividade {
+        margin-top: 4%;
+        height: 49lvh;        
+    }
+        .index01 > div.interatividade > div.teclado {
+
+        }
+        .index01 > div.interatividade > div.tecladopotencia {
+
+        }
+    .index01 > div.acao {        
+        height:12lvh;
+        width:96%;
+    }

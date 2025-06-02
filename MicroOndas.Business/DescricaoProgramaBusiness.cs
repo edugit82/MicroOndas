@@ -35,16 +35,14 @@ namespace MicroOndas.Business
                     else
                     {
                         string style = programa.Index > 5 ? "italic" : "normal";
-                        this.Retorno += "<div class = 'corpoprojeto'>";
-
+                        
                         this.Retorno += "<div id='" + programa.Index + "'><label style='font-style:" + style + "'>" + programa.Index.ToString("00") + "</label></div>";
                         this.Retorno += "<div><label style='font-style:" + style + "'> Nome: " + programa.Nome + "</label></div>";
                         this.Retorno += "<div><label style='font-style:" + style + "'> Alimento: " + programa.Alimento + "</label></div>";
                         this.Retorno += "<div><label style='font-style:" + style + "'> Tempo: " + programa.Tempo.ToString("mm:ss") + "</label></div>";
                         this.Retorno += "<div><label style='font-style:" + style + "'> Potencia: " + programa.Potencia + "</label></div>";
                         this.Retorno += "<div><label style='font-style:" + style + "'> Instruções: " + programa.Instrucoes + "</label></div>";
-
-                        this.Retorno += "</div>";                        
+                                                
                     }                    
                 }
             }

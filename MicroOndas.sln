@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroOndas.Public", "MicroO
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroOndas.Business", "MicroOndas.Business\MicroOndas.Business.csproj", "{536E090B-6332-4B71-ABB6-5BF72E6DCB25}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroOndas.Interface", "MicroOndas.Interface\MicroOndas.Interface.csproj", "{95D49AAD-39D1-4349-A4DC-F5B2632094F0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MicroOndas.Interface", "MicroOndas.Interface\MicroOndas.Interface.csproj", "{AD712313-7A97-4771-81D1-3F7A9BC35791}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,10 +35,10 @@ Global
 		{536E090B-6332-4B71-ABB6-5BF72E6DCB25}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{536E090B-6332-4B71-ABB6-5BF72E6DCB25}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{536E090B-6332-4B71-ABB6-5BF72E6DCB25}.Release|Any CPU.Build.0 = Release|Any CPU
-		{95D49AAD-39D1-4349-A4DC-F5B2632094F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{95D49AAD-39D1-4349-A4DC-F5B2632094F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{95D49AAD-39D1-4349-A4DC-F5B2632094F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{95D49AAD-39D1-4349-A4DC-F5B2632094F0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AD712313-7A97-4771-81D1-3F7A9BC35791}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AD712313-7A97-4771-81D1-3F7A9BC35791}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AD712313-7A97-4771-81D1-3F7A9BC35791}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AD712313-7A97-4771-81D1-3F7A9BC35791}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -14,11 +14,26 @@ namespace MicroOndas.Business
     {
         public AquecimentoBusiness(AquecimentoViewModel viewmodel, bool logado) 
         {
+            VariaveisModel variaveis = new VariaveisModel();
+
+            Action<string> setMensagemProgresso = (mensagem) =>
+            {
+                using (Context ctx = new Context())
+                {
+                    variaveis = ctx.Variaveis.ToList().First(a => a.Index == 5);
+                    variaveis.Valor = mensagem;
+                    ctx.Entry(variaveis).State = EntityState.Modified;
+                    ctx.SaveChanges();
+                }
+            };
+
             //Está logado
             if (!logado)
             {
                 this.Retorno = "Token inválido!";
                 this.Cor = "red";
+
+                setMensagemProgresso(this.Retorno);
 
                 return;
             }
@@ -30,7 +45,7 @@ namespace MicroOndas.Business
 
             viewmodel.Tempo = viewmodel.Tempo ?? "00:00";
             int num = 0;
-
+            
             bool gravaerro = true;
 
             try
@@ -136,18 +151,24 @@ namespace MicroOndas.Business
                 this.Retorno = ex.Message;
                 this.Cor = "red";
                 gravaerro = false;
+
+                setMensagemProgresso(this.Retorno);
             }
             catch (AquecimentoTempoExcedidoException ex)
             {
                 this.Retorno = ex.Message;
                 this.Cor = "red";
                 gravaerro = false;
+
+                setMensagemProgresso(this.Retorno);
             }
             catch (AquecimentoTempoInvalidoException ex)
             {
                 this.Retorno = ex.Message;
                 this.Cor = "red";
                 gravaerro = false;
+
+                setMensagemProgresso(this.Retorno);
             }
             catch (Exception ex)
             {

@@ -12,22 +12,29 @@ namespace MicroOndas.Business
 {
     public class PausaBusiness : _Business
     {
-        public PausaBusiness(bool logado)            
+        public PausaBusiness(bool logado)
         {
-            //Está logado
-            if (!logado)
-            {
-                this.Retorno = "Token inválido!";
-                this.Cor = "red";
-
-                return;
-            }
+            VariaveisModel variaveis = new VariaveisModel();
 
             bool gravaerro = true;
             try
             {
-                using (Context ctx = new Context()) 
+                using (Context ctx = new Context())
                 {
+                    //Está logado
+                    if (!logado)
+                    {
+                        this.Retorno = "Token inválido!";
+                        this.Cor = "red";
+
+                        variaveis = ctx.Variaveis.ToList().First(a => a.Index == 5);
+                        variaveis.Valor = this.Retorno;
+                        ctx.Entry(variaveis).State = EntityState.Modified;
+                        ctx.SaveChanges();
+
+                        return;
+                    }
+
                     //Pausados
                     List<AquecimentoModel> pausados = ctx.Aquecimento.ToList().Where(a => !a.Ativo && !a.Cancelado).ToList();
                     if (pausados.Any())
@@ -42,6 +49,13 @@ namespace MicroOndas.Business
 
                         this.Retorno = "Aquecimento cancelado!";
                         this.Cor = "red";
+
+                        variaveis = ctx.Variaveis.ToList().First(a => a.Index == 5);
+                        variaveis.Valor = this.Retorno;
+                        ctx.Entry(variaveis).State = EntityState.Modified;
+                        ctx.SaveChanges();
+
+                        LimpaVariaveisBusiness.Limpa();
                     }
 
                     //Ativos
@@ -61,8 +75,12 @@ namespace MicroOndas.Business
 
                             this.Retorno = "Aquecimento pausado!";
                             this.Cor = "blue";
-                        }
 
+                            variaveis = ctx.Variaveis.ToList().First(a => a.Index == 5);
+                            variaveis.Valor = this.Retorno;
+                            ctx.Entry(variaveis).State = EntityState.Modified;
+                            ctx.SaveChanges();
+                        }
                     }
                 }
             }
@@ -75,7 +93,7 @@ namespace MicroOndas.Business
             {
                 GC.Collect();
                 GC.WaitForPendingFinalizers();
-            }
+            }            
         }
     }
 }

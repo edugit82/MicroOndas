@@ -1,0 +1,24 @@
+﻿/* \MicroOndas.Interface\reactapp\src\componentes\forms\instrucoes\index01.module.css */
+.index01 {
+    padding-top: 2%;
+    padding-left: 2%;
+    padding-right: 2%;
+}
+
+    .index01 > label {
+        color: yellow;
+        margin-bottom: 0.5%;
+    }
+
+    .index01 > textarea {
+        color: yellow;
+        background-color: black;
+        margin-bottom: 0.5%;
+        width: 100%;
+        height: 20vh;
+    }
+
+    .index01 > span {
+        color: white;
+        font-style: italic;
+    }

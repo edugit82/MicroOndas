@@ -49,19 +49,19 @@ namespace MicroOndas.Testes
         /// </summary>
         /// <param name="login"></param>
         /// <param name="senha"></param>
-        /// <param name="resenha"></param>
+        /// <param name="confirma"></param>
         [Theory]
         [MemberData(nameof(CadastroData))]
-        public void TestCadastro(string login, string senha, string resenha)
+        public void TestCadastro(string login, string senha, string confirma)
         {
             CadastrarViewModel model = new CadastrarViewModel
             {
                 Login = login,
                 Senha = senha,
-                ReSenha = resenha
+                Confirma = confirma
             };
 
-            CadastrarBusiness cadastroBusiness = new CadastrarBusiness(model);
+            CadastrarBusiness cadastroBusiness = new CadastrarBusiness(model, true);
         }
 
         /// <summary>
@@ -92,7 +92,7 @@ namespace MicroOndas.Testes
                 Senha = senha                
             };
 
-            LogarBusiness logarbusiness = new LogarBusiness(model);
+            LogarBusiness logarbusiness = new LogarBusiness(model, true);
         }
 
         /// <summary>
@@ -254,17 +254,10 @@ namespace MicroOndas.Testes
 
         /// <summary>
         /// Testa o progresso do aquecimento.
-        /// </summary>
-        /// <param name="id"></param>
-        [Theory]
-        [InlineData(-1)]
-        public void TesteAquecimentoValidaProgresso(int id) 
+        /// </summary>        
+        [Fact]        
+        public void TesteAquecimentoValidaProgresso() 
         {
-            ProgressoViewModel model = new ProgressoViewModel
-            {
-                Id = id
-            };
-
             using (Context ctx = new Context())
             {
                 ctx.Database.ExecuteSqlRaw("truncate table Aquecimento");
@@ -292,24 +285,17 @@ namespace MicroOndas.Testes
 
             for (var i = 0; i < (60 * 3); i++) 
             {
-                ProgressoBusiness progressoBusiness = new ProgressoBusiness(model,true);
+                ProgressoBusiness progressoBusiness = new ProgressoBusiness(true);
                 Debug.WriteLine(string.Format("Cor: {0}, Progresso: {1}", progressoBusiness.Cor, progressoBusiness.Retorno));
                 Thread.Sleep(1000);
             }
         }
         /// <summary>
         /// Testa o progresso do aquecimento pausado.
-        /// </summary>
-        /// <param name="id"></param>
-        [Theory]
-        [InlineData(-1)]
-        public void TesteAquecimentoPausaProgresso(int id)
+        /// </summary>        
+        [Fact]        
+        public void TesteAquecimentoPausaProgresso()
         {
-            ProgressoViewModel model = new ProgressoViewModel
-            {
-                Id = id
-            };
-
             using (Context ctx = new Context())
             {
                 ctx.Database.ExecuteSqlRaw("truncate table Aquecimento");
@@ -337,7 +323,7 @@ namespace MicroOndas.Testes
 
             for (var i = 0; i < (60 * 3); i++)
             {
-                ProgressoBusiness progressoBusiness = new ProgressoBusiness(model, true);
+                ProgressoBusiness progressoBusiness = new ProgressoBusiness(true);
                 Debug.WriteLine(string.Format("Cor: {0}, Progresso: {1}", progressoBusiness.Cor, progressoBusiness.Retorno));
                 Thread.Sleep(1000);
             }
@@ -417,12 +403,12 @@ namespace MicroOndas.Testes
         /// <returns></returns>
         public static IEnumerable<object[]> ProgramaData()
         {
-            yield return new object[] { "", "", "", 0, "", "" };
-            yield return new object[] { "Frango Frito", "", "", 0, "", "" };
-            yield return new object[] { "Frango Frito", "Frango", "", 0, "", "" };
-            yield return new object[] { "Frango Frito", "Frango", "01:15", 0, "", "" };
-            yield return new object[] { "Frango Frito", "Frango", "01:15", 5, "", "" };
-            yield return new object[] { "Frango Frito", "Frango", "01:15", 5, "$", "Ótimo prato, acompanhado com batata!" };
+            yield return new object[] { "", "", "", "0", "", "" };
+            yield return new object[] { "Frango Frito", "", "", "0", "", "" };
+            yield return new object[] { "Frango Frito", "Frango", "", "0", "", "" };
+            yield return new object[] { "Frango Frito", "Frango", "01:15", "0", "", "" };
+            yield return new object[] { "Frango Frito", "Frango", "01:15", "5", "", "" };
+            yield return new object[] { "Frango Frito", "Frango", "01:15", "5", "$", "Ótimo prato, acompanhado com batata!" };
         }
 
         /// <summary>
@@ -436,7 +422,7 @@ namespace MicroOndas.Testes
         /// <param name="instrucoes"></param>
         [Theory]
         [MemberData(nameof(ProgramaData))]
-        public void TesteCadastroPrograma(string nome, string alimento, string tempo, int potencia, string progresso, string instrucoes)
+        public void TesteCadastroPrograma(string nome, string alimento, string tempo, string potencia, string progresso, string instrucoes)
         {
             CadastroProgramaViewModel model = new CadastroProgramaViewModel
             {
@@ -482,5 +468,35 @@ namespace MicroOndas.Testes
             DadosProgramaBusiness dadosprogramabusiness = new DadosProgramaBusiness(true);
         }
 
+        /// <summary>
+        /// Testa o botão de texto.
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="valor"></param>
+        [Theory]
+        [InlineData(1, "0")]
+        [InlineData(1, "1")]
+        [InlineData(1, "2")]
+        [InlineData(2, "+")]
+        [InlineData(2, "-")]
+        public void TesteBotaoTexto(int index, string valor) 
+        {
+            BotaoTextoViewModel viewmodel = new BotaoTextoViewModel()
+            {
+                Tipo = index,
+                Texto = valor
+            };
+
+            BotaoTextoBusiness botaotextobusiness = new BotaoTextoBusiness(viewmodel, true);
+        }
+
+        /// <summary>
+        /// Testa a obtenção de programas agendados.
+        /// </summary>
+        [Fact]
+        public void TesteGetProgramado() 
+        {
+            GetProgramas getTituloProgramas = new GetProgramas();
+        }
     }
 }

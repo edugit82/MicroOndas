@@ -1,6 +1,7 @@
 ﻿using MicroOndas.DataBase;
 using MicroOndas.DataBase.Models;
 using MicroOndas.Public;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,14 +12,24 @@ namespace MicroOndas.Business
 {
     public class CadastrarBusiness : _Business
     {        
-        public CadastrarBusiness(CadastrarViewModel viewmodel) 
-        {            
+        public CadastrarBusiness(CadastrarViewModel viewmodel, bool logado) 
+        {
+
+            //Está logado
+            if (!logado)
+            {
+                this.Retorno = "Token inválido!";
+                this.Cor = "red";                
+
+                return;
+            }
+
             bool gravaerro = true;
             try 
             {
                 viewmodel.Login = viewmodel.Login.ToUpper().Trim();
                 viewmodel.Senha = viewmodel.Senha.Trim();
-                viewmodel.ReSenha = viewmodel.ReSenha.Trim();
+                viewmodel.Confirma = viewmodel.Confirma.Trim();
 
                 if (viewmodel.Login.Length < 5)
                     throw new CadastrarLoginInvalidoException("O login deve ter no mínimo 5 caracteres.");
@@ -26,10 +37,10 @@ namespace MicroOndas.Business
                 if (viewmodel.Senha.Trim() == string.Empty)
                     throw new CadastrarSenhaInvalidoException("Senha não pode ser vazia.");
 
-                if (viewmodel.ReSenha.Trim() == string.Empty)
+                if (viewmodel.Confirma.Trim() == string.Empty)
                     throw new CadastrarRepetirSenhaInvalidoException("Repetir senha não pode ser vazia.");
 
-                if (viewmodel.Senha != viewmodel.ReSenha)
+                if (viewmodel.Senha != viewmodel.Confirma)
                     throw new CadastrarRepetirDiferenteSenhaInvalidoException("Repetir senha diferente de senha.");
 
                 string hash = ConverterStringSHA1.Converter(viewmodel.Senha.Trim() ?? "");

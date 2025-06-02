@@ -13,7 +13,7 @@ namespace MicroOndas.Public
             try
             {
                 string texto = "";
-                texto = string.Format("   Hora: {0:HH:mm:ss}{1}", DateTime.Now, Environment.NewLine);
+                texto = string.Format("   Hora: {0:dd-MM-yyyy HH:mm:ss}{1}", DateTime.Now, Environment.NewLine);
                 texto += string.Format("   Mensagem: {0}{1}{1}", ex?.Message, Environment.NewLine);
                 do
                 {

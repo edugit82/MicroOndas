@@ -1,21 +1,31 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using System.Reflection;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllers();
 
-builder.Services.AddDistributedMemoryCache();
+// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+builder.Services.AddOpenApi();
 
-//Config Sessions
+// Adicionar serviços
+builder.Services.AddDistributedMemoryCache(); // Armazena sessões em memória
 builder.Services.AddSession(options =>
-{    
-    options.Cookie.HttpOnly = true;
-    options.Cookie.IsEssential = true;
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30); // Tempo de inatividade antes da expiração
+    options.Cookie.HttpOnly = true; // Protege contra XSS
+    options.Cookie.IsEssential = true; // Necessário para funcionar mesmo com política de cookies    
+});
+
+//Config CORS, pra acesso externo
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowLocalhost",
+        builder => builder.WithOrigins("http://localhost:3000")
+                          .AllowAnyMethod()
+                          .AllowAnyHeader());
 });
 
 builder.Services.AddSwaggerGen(c =>
@@ -28,13 +38,14 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-// Configura��o da autentica��o JWT
+// Configuração da autenticação JWT
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 }).AddJwtBearer(options =>
 {
+
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuer = true,
@@ -52,16 +63,15 @@ builder.Services.AddAuthentication(options =>
 
 var app = builder.Build();
 
+//Use CORS
+app.UseCors("AllowLocalhost");
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+    app.MapOpenApi();
     app.UseSwagger();
     app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "MicroOndas API v1"));
-}
-else
-{
-    app.UseExceptionHandler("/Home/Error");
-    app.UseHsts();
 }
 
 app.UseHttpsRedirection();
@@ -72,10 +82,8 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.UseSession();
+app.UseSession(); // Ativar middleware de sessão
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=MicroOndas}/{action=Logar}/{id?}");
+app.MapControllers();
 
 app.Run();

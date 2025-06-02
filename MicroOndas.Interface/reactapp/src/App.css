@@ -1,0 +1,33 @@
+﻿#root > div > div:nth-child(1) {
+    margin-bottom: 4%;
+    padding-left: 20%;
+    width:80%;
+}
+
+    #root > div > div:nth-child(1) > a {
+        -webkit-text-decoration: none;
+        text-decoration: none;
+        color: yellow;        
+        padding-top: 1.5%;
+        text-align: center;        
+        height: 5vh;
+    }
+
+        #root > div > div:nth-child(1) > a:nth-child(1) {
+            width: 10%;
+        }
+
+        #root > div > div:nth-child(1) > a:nth-child(2) {
+            width: 10%;
+            margin-left: 3%;
+        }
+
+        #root > div > div:nth-child(1) > a:nth-child(3) {
+            width: 18%;
+            margin-left: 3%;
+        }
+
+        #root > div > div:nth-child(1) > a:nth-child(4) {
+            width: 15%;
+            margin-left: 3%;
+        }

@@ -22,6 +22,7 @@ namespace MicroOndas.DataBase
         public DbSet<LoginModel> Login { get; set; }
         public DbSet<AquecimentoModel> Aquecimento { get; set; }
         public DbSet<ProgramadoModel> Programado { get; set; }
+        public DbSet<VariaveisModel> Variaveis { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -34,6 +35,7 @@ namespace MicroOndas.DataBase
             new LoginMap(ref modelBuilder);
             new AquecimentoMap(ref modelBuilder);
             new ProgramadoMap(ref modelBuilder);
+            new VariaveisMap(ref modelBuilder);
         }
     }
 }

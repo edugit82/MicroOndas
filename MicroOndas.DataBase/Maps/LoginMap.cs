@@ -19,6 +19,7 @@ namespace MicroOndas.DataBase.Maps
                 config.Property(p => p.Usuario).HasColumnName("Usuario");
                 config.Property(p => p.Senha).HasColumnName("Senha");
                 config.Property(p => p.Token).HasColumnName("Token");
+                config.Property(p => p.TokenTime).HasColumnName("TokenTime");
 
                 config.ToTable("Login");
             };

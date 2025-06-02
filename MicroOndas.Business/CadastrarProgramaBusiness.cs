@@ -30,8 +30,10 @@ namespace MicroOndas.Business
                 viewmodel.Tempo = viewmodel.Tempo.Trim();
                 viewmodel.Progresso = viewmodel.Progresso.Trim();
                 viewmodel.Instrucoes = viewmodel.Instrucoes.Trim();
+                viewmodel.Potencia = viewmodel.Potencia.Trim() == "" ? "0" : viewmodel.Potencia.Trim();
+                viewmodel.PotenciaM = viewmodel.PotenciaM.Trim() == "" ? "0" : viewmodel.PotenciaM.Trim();
 
-                if(viewmodel.Nome == string.Empty)
+                if (viewmodel.Nome == string.Empty)
                     throw new CadastrarProgramaNomeInvalidoException("Nome do programa não pode ser vazio!");
 
                 if (viewmodel.Alimento == string.Empty)
@@ -43,7 +45,7 @@ namespace MicroOndas.Business
                 if (viewmodel.Tempo.Length < 5)
                     throw new CadastrarProgramaTempoFormatoInvalidoException("Tempo precisa ter o formato 00:00!");         
 
-                if (viewmodel.Potencia < 1)
+                if (int.Parse(viewmodel.Potencia) < 1)
                     throw new CadastrarProgramaPotenciaInvalidoException("Potência não pode ser menor que 1!");
 
                 if (viewmodel.Progresso == string.Empty)
@@ -56,7 +58,7 @@ namespace MicroOndas.Business
                         Nome = viewmodel.Nome,
                         Alimento = viewmodel.Alimento,
                         Tempo = DateTime.Parse(string.Format("01-01-1970 {0}", viewmodel.Tempo)),
-                        Potencia = viewmodel.Potencia,
+                        Potencia = int.Parse(viewmodel.Potencia),
                         Caracter = viewmodel.Progresso,
                         Instrucoes = viewmodel.Instrucoes
                     };

@@ -12,22 +12,29 @@ namespace MicroOndas.Business
 {
     public class ProgressoBusiness : _Business
     {
-        public ProgressoBusiness(ProgressoViewModel viewmodel, bool logado)
+        public ProgressoBusiness(bool logado)
         {
-            //Está logado
-            if (!logado)
-            {
-                this.Retorno = "Token inválido!";
-                this.Cor = "red";
 
-                return;
-            }
-
+            VariaveisModel variaveis = new VariaveisModel();
             bool gravaerro = true;
             try
             {
                 using (Context ctx = new Context())
-                {
+                {                    
+                    //Está logado
+                    if (!logado)
+                    {
+                        this.Retorno = "Token inválido!";
+                        this.Cor = "red";
+
+                        variaveis = ctx.Variaveis.ToList().First(a => a.Index == 5);
+                        variaveis.Valor = this.Retorno;
+                        ctx.Entry(variaveis).State = EntityState.Modified;
+                        ctx.SaveChanges();
+
+                        return;
+                    }
+
                     //Ativos
                     List<AquecimentoModel> ativos = ctx.Aquecimento.ToList().Where(a => a.Ativo && !a.Cancelado).ToList();
 
@@ -37,11 +44,15 @@ namespace MicroOndas.Business
                     //Existe
                     if (exist)
                     {
-                        string caracter = ".";
+                        VariaveisModel? idmodel = ctx.Variaveis.FirstOrDefault(a => a.Index == 3);
+                        int id = -1;
+                        int.TryParse(idmodel?.Valor, out id);
+                        string caracter = "."; //Caracter de carregamento padrão
+
                         //Pega o caracter de carregamento
-                        if (viewmodel.Id > -1)
+                        if (id > -1)
                         {
-                            ProgramadoModel? programado = ctx.Programado.ToList().Where(a => a.Index == viewmodel.Id).FirstOrDefault();
+                            ProgramadoModel? programado = ctx.Programado.ToList().Where(a => a.Index == id).FirstOrDefault();
                             caracter = programado?.Caracter ?? caracter;
                         }
 
@@ -65,6 +76,12 @@ namespace MicroOndas.Business
                                 this.Retorno += spontencia + " ";
 
                             this.Cor = "yellow";
+
+                            variaveis = ctx.Variaveis.ToList().First(a => a.Index == 5);
+                            variaveis.Valor = this.Retorno;
+                            ctx.Entry(variaveis).State = EntityState.Modified;
+                            ctx.SaveChanges();
+
                             return;
                         }
                         else
@@ -77,6 +94,13 @@ namespace MicroOndas.Business
 
                             this.Retorno = "Aquecimento finalizado!";
                             this.Cor = "green";
+
+                            variaveis = ctx.Variaveis.ToList().First(a => a.Index == 5);
+                            variaveis.Valor = this.Retorno;
+                            ctx.Entry(variaveis).State = EntityState.Modified;
+                            ctx.SaveChanges();
+
+                            LimpaVariaveisBusiness.Limpa();
 
                             return;
                         }                        
@@ -91,6 +115,11 @@ namespace MicroOndas.Business
                     {
                         this.Retorno = "Aquecimento pausado!";
                         this.Cor = "blue";
+
+                        variaveis = ctx.Variaveis.ToList().First(a => a.Index == 5);
+                        variaveis.Valor = this.Retorno;
+                        ctx.Entry(variaveis).State = EntityState.Modified;
+                        ctx.SaveChanges();
                     }
                 }
             }
